@@ -10,6 +10,8 @@ public class AttachAnchor : MonoBehaviour
 
     public float distance;
 
+    [SerializeField] Transform startPoint;
+    [SerializeField] Transform endPoint;
    
 
     [SerializeField] XRDeviceManager deviceManager;
@@ -28,6 +30,8 @@ public class AttachAnchor : MonoBehaviour
    public bool inRange;
 
 
+    bool isGrabbed;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -39,6 +43,16 @@ public class AttachAnchor : MonoBehaviour
     {
         XRDeviceManager.rightThumbAxisEvent -= ChangePosition;
         XRDeviceManager.leftThumbAxisEvent -= ChangePosition;
+    }
+
+    public void IsGrabbed()
+    {
+        isGrabbed = true;
+    }
+
+    public void IsReleased()
+    {
+        isGrabbed = false;
     }
 
 
@@ -64,53 +78,83 @@ public class AttachAnchor : MonoBehaviour
 
     private void ChangePosition(Vector2 axis)
     {
-        
-
-        if (clampedDistance >= 0.21 && clampedDistance <= 3.9)
+        if (isGrabbed)
         {
-            inRange = true;
 
-            if (inRange)
+            if (axis.y > 0)
             {
 
-                if (axis.y > 0)
+                float step = axis.y * Time.deltaTime;
+                transform.position = Vector3.MoveTowards(transform.position, endPoint.position, step);
+
+                if (Vector3.Distance(transform.position, endPoint.position) < 0.001f)
                 {
-                    float speed = axis.y;
-
-
-                    if (clampedDistance <= 3.9)
-                        transform.Translate(Vector3.forward * (Time.deltaTime * speed));
-                    else
-                    {
-                      //  Vector3 clampedPosition = new Vector3(this.transform.position.x, this.transform.position.y, this.transform.position.z + 0.05f);
-                       // this.transform.position = clampedPosition;
-                    }
-                        
-
-
+                    return;
                 }
-                if (axis.y < 0)
+
+            }
+            else if (axis.y < 0)
+            {
+                float step = axis.y * Time.deltaTime;
+                transform.position = Vector3.MoveTowards(transform.position, startPoint.position, step * -1f);
+
+                if (Vector3.Distance(transform.position, startPoint.position) < 0.001f)
                 {
-                    float speed = axis.y * -1f;
-
-
-                    if (clampedDistance >= 0.21)
-                        transform.Translate(Vector3.back * (Time.deltaTime * speed));
-                    else
-                    {
-                     //  Vector3 clampedPosition = new Vector3(this.transform.position.x, this.transform.position.y, this.transform.position.z - 0.05f);
-                     //   this.transform.position = clampedPosition;
-                    }
-
+                    return;
                 }
             }
         }
-        else
-        {
-          //  DistancClamp();
-        }
-
     }
+
+ //   private void ChangePosition(Vector2 axis)
+  //  {
+        
+//
+   //     if (clampedDistance >= 0.21 && clampedDistance <= 3.9)
+   //     {
+  //          inRange = true;
+
+    //        if (inRange)
+    //        {
+
+    //            if (axis.y > 0)
+    //            {
+     //               float speed = axis.y;
+
+
+     //               if (clampedDistance <= 3.9)
+     //                   transform.Translate(Vector3.forward * (Time.deltaTime * speed));
+      //              else
+                 //   {
+                      //  Vector3 clampedPosition = new Vector3(this.transform.position.x, this.transform.position.y, this.transform.position.z + 0.05f);
+                       // this.transform.position = clampedPosition;
+                  //  }
+                        
+
+
+   //             }
+   //             if (axis.y < 0)
+  //              {
+   //                 float speed = axis.y * -1f;
+
+//
+   //                 if (clampedDistance >= 0.21)
+  //                      transform.Translate(Vector3.back * (Time.deltaTime * speed));
+   //                 else
+  //                  {
+                     //  Vector3 clampedPosition = new Vector3(this.transform.position.x, this.transform.position.y, this.transform.position.z - 0.05f);
+                     //   this.transform.position = clampedPosition;
+   //                 }
+   //
+   //             }
+    //        }
+ //       }
+//        else
+ //       {
+          //  DistancClamp();
+//        }
+
+//    }
 
     // Update is called once per frame
     void Update()
@@ -128,7 +172,7 @@ public class AttachAnchor : MonoBehaviour
         RightController();
         LeftController();
 
-       DistancClamp();
+
 
     }
    public float clampedDistance = 0;
@@ -136,29 +180,31 @@ public class AttachAnchor : MonoBehaviour
     private void UpdateCubePosition()
     {
 
-       
 
-        if (deviceManager.leftGrip || deviceManager.rightGrip)
-            return;
 
-        if (reticle.activeInHierarchy)
-        {
-            this.transform.position = reticle.transform.position;
-        }
+      
+
+
+
+            if (reticle.activeInHierarchy && !isGrabbed)
+            {
+                this.transform.position = reticle.transform.position;
+            }
+        
         else
         {
-            this.transform.position = this.transform.position;
+            return;
         }
 
         
-    }
+   }
 
     private void RightController()
     {
         if (rightController)
         {
             // Move the canvas
-          bool  moveableRight = deviceManager.rightGrip;
+          bool  moveableRight = isGrabbed;
 
             if (reticle.activeInHierarchy && moveableRight)
             {
@@ -167,7 +213,7 @@ public class AttachAnchor : MonoBehaviour
             }
             else
             {
-                canvasGripped = false;
+                return;
             }
         }
     }
@@ -176,7 +222,7 @@ public class AttachAnchor : MonoBehaviour
         if (leftController)
         {
             // Move the Canvas
-           bool moveableLeft = deviceManager.leftGrip;
+           bool moveableLeft = isGrabbed;
 
            
              if (reticle.activeInHierarchy && moveableLeft)
@@ -187,7 +233,7 @@ public class AttachAnchor : MonoBehaviour
             }
             else
             {
-                canvasGripped = false;
+                return;
             }
         }
     }
