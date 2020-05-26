@@ -29,25 +29,43 @@ public class AttachAnchor : MonoBehaviour
 
    public bool inRange;
 
+    private Vector3 recticleOffset = Vector3.zero;
 
     bool isGrabbed;
 
     // Start is called before the first frame update
     void Start()
     {
-        XRDeviceManager.rightThumbAxisEvent += ChangePosition;
-        XRDeviceManager.leftThumbAxisEvent += ChangePosition;
+        DeviceManager.rightThumbAxisEvent += ChangePosition;
+        DeviceManager.leftThumbAxisEvent += ChangePosition;
+        DeviceManager.rightThumbAxisEvent += ScaleCanvas;
+        DeviceManager.leftThumbAxisEvent += ScaleCanvas;
+
     }
 
     private void OnDestroy()
     {
-        XRDeviceManager.rightThumbAxisEvent -= ChangePosition;
-        XRDeviceManager.leftThumbAxisEvent -= ChangePosition;
+        DeviceManager.rightThumbAxisEvent -= ChangePosition;
+        DeviceManager.leftThumbAxisEvent -= ChangePosition;
+        DeviceManager.rightThumbAxisEvent -= ScaleCanvas;
+        DeviceManager.leftThumbAxisEvent -= ScaleCanvas;
     }
 
     public void IsGrabbed()
     {
-        isGrabbed = true;
+
+        if (reticle.activeInHierarchy)
+        {
+            isGrabbed = true;
+            
+        }
+      
+
+    }
+
+    private void DropUI()
+    {
+        canvas.transform.parent = null;
     }
 
     public void IsReleased()
@@ -80,86 +98,40 @@ public class AttachAnchor : MonoBehaviour
     {
         if (isGrabbed)
         {
-
-            if (axis.y > 0)
+            if (axis.x >= 0.9f || axis.x <= -0.9f) return;
+            else
             {
 
-                float step = axis.y * Time.deltaTime;
-                transform.position = Vector3.MoveTowards(transform.position, endPoint.position, step);
-
-                if (Vector3.Distance(transform.position, endPoint.position) < 0.001f)
+                if (axis.y > 0)
                 {
-                    return;
+
+                    float step = axis.y * Time.deltaTime;
+                    transform.position = Vector3.MoveTowards(transform.position, endPoint.position, step);
+
+                    if (Vector3.Distance(transform.position, endPoint.position) < 0.001f)
+                    {
+                        return;
+                    }
+
                 }
-
-            }
-            else if (axis.y < 0)
-            {
-                float step = axis.y * Time.deltaTime;
-                transform.position = Vector3.MoveTowards(transform.position, startPoint.position, step * -1f);
-
-                if (Vector3.Distance(transform.position, startPoint.position) < 0.001f)
+                else if (axis.y < 0)
                 {
-                    return;
+                    float step = axis.y * Time.deltaTime;
+                    transform.position = Vector3.MoveTowards(transform.position, startPoint.position, step * -1f);
+
+                    if (Vector3.Distance(transform.position, startPoint.position) < 0.001f)
+                    {
+                        return;
+                    }
                 }
             }
         }
     }
 
- //   private void ChangePosition(Vector2 axis)
-  //  {
-        
-//
-   //     if (clampedDistance >= 0.21 && clampedDistance <= 3.9)
-   //     {
-  //          inRange = true;
-
-    //        if (inRange)
-    //        {
-
-    //            if (axis.y > 0)
-    //            {
-     //               float speed = axis.y;
-
-
-     //               if (clampedDistance <= 3.9)
-     //                   transform.Translate(Vector3.forward * (Time.deltaTime * speed));
-      //              else
-                 //   {
-                      //  Vector3 clampedPosition = new Vector3(this.transform.position.x, this.transform.position.y, this.transform.position.z + 0.05f);
-                       // this.transform.position = clampedPosition;
-                  //  }
-                        
-
-
-   //             }
-   //             if (axis.y < 0)
-  //              {
-   //                 float speed = axis.y * -1f;
-
-//
-   //                 if (clampedDistance >= 0.21)
-  //                      transform.Translate(Vector3.back * (Time.deltaTime * speed));
-   //                 else
-  //                  {
-                     //  Vector3 clampedPosition = new Vector3(this.transform.position.x, this.transform.position.y, this.transform.position.z - 0.05f);
-                     //   this.transform.position = clampedPosition;
-   //                 }
-   //
-   //             }
-    //        }
- //       }
-//        else
- //       {
-          //  DistancClamp();
-//        }
-
-//    }
-
-    // Update is called once per frame
+ 
     void Update()
     {
-
+      
 
         distance = Vector3.Distance(controller.position, canvas.transform.position);
         clampedDistance = Mathf.Clamp(distance, 0.2f, 4f);
@@ -167,11 +139,11 @@ public class AttachAnchor : MonoBehaviour
 
 
         UpdateCubePosition();
-       
 
-        RightController();
-        LeftController();
 
+        //  RightController();
+        //   LeftController();
+        MoveUI();
 
 
     }
@@ -179,17 +151,13 @@ public class AttachAnchor : MonoBehaviour
 
     private void UpdateCubePosition()
     {
-
-
-
-      
-
-
-
+            
             if (reticle.activeInHierarchy && !isGrabbed)
             {
+          
                 this.transform.position = reticle.transform.position;
-            }
+            
+        }
         
         else
         {
@@ -199,51 +167,81 @@ public class AttachAnchor : MonoBehaviour
         
    }
 
-    private void RightController()
+    private void ScaleCanvas(Vector2 axis)
     {
-        if (rightController)
-        {
-            // Move the canvas
-          bool  moveableRight = isGrabbed;
+        float h = 0;
+        float scale = 0;
 
-            if (reticle.activeInHierarchy && moveableRight)
+        if (isGrabbed)
+        {
+
+            if (axis.x > 0)
             {
-                canvas.transform.position = this.transform.position;
-                canvasGripped = true;
+                h = axis.x * (axis.x * Time.deltaTime);
             }
-            else
+            else if (axis.x < 0)
             {
-                return;
+                h = axis.x * ((axis.x * -1) * Time.deltaTime);
             }
+
+            scale += h;
+            scale = Mathf.Clamp(scale, -1, 1);
+            float tmpScale = ScaleValue(-1f, 1f, 0.2f, 1.7f, scale);
+
+            Vector3 newCanvasScale = new Vector3(tmpScale, tmpScale, 0.001f);
+
+
+            Debug.Log(newCanvasScale);
+
+            this.transform.localScale = newCanvasScale;
+
         }
-    }
-    private void LeftController()
-    {
-        if (leftController)
-        {
-            // Move the Canvas
-           bool moveableLeft = isGrabbed;
+        else
+            return;
 
+
+    }
+
+    private float ScaleValue(float OldMin, float OldMax, float NewMin, float NewMax, float OldValue)
+    {
+
+        float OldRange = (OldMax - OldMin);
+        float NewRange = (NewMax - NewMin);
+        float NewValue = (((OldValue - OldMin) * NewRange) / OldRange) + NewMin;
+
+        return (NewValue);
+    }
+
+    public void MoveUI()
+    {
+      
+
+
+        if (reticle.activeInHierarchy && isGrabbed)
+        {
+
+
+            // canvas.transform.position = this.transform.position + recticleOffset;
+            //  canvas.transform.rotation = this.transform.rotation;
+            canvas.transform.SetParent(transform);
+            canvasGripped = true;
+        }
+       else  if(reticle.activeInHierarchy && !isGrabbed)
+        {
+
+        canvas.transform.SetParent(null);
            
-             if (reticle.activeInHierarchy && moveableLeft)
-            {
-             canvas.transform.position = this.transform.position;
-                canvasGripped = true;
-
-            }
-            else
-            {
-                return;
-            }
         }
     }
 
 
 
 
+  
 
 
- 
+
+
 
 
 }

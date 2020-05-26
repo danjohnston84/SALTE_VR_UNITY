@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using System.Runtime.InteropServices.WindowsRuntime;
 
 public class UIMover : MonoBehaviour
 {
@@ -15,9 +16,14 @@ public class UIMover : MonoBehaviour
     public CharacterController controller;
 
     Transform canvasAnchor;
-    public Vector3 pointerPosition;
+
+
+  
+
+    public float angle;
+
     
-    private float rotateSpeed = 10f;
+    private float rotateSpeed = 2f;
     private float moveSpeed = 1f;
 
     public float distance;
@@ -34,8 +40,8 @@ public class UIMover : MonoBehaviour
         this.canvasAnchor = GameObject.Find("CanvasAnchor").transform;
 
    
-        XRDeviceManager.leftThumbAxisEvent += ScaleCanvas;
-        XRDeviceManager.rightThumbAxisEvent += ScaleCanvas;
+     //   DeviceManager.leftThumbAxisEvent += ScaleCanvas;
+     //   DeviceManager.rightThumbAxisEvent += ScaleCanvas;
 
         newScale = transform.localScale;
 
@@ -44,55 +50,67 @@ public class UIMover : MonoBehaviour
     private void OnDestroy()
     {
   
-        XRDeviceManager.leftThumbAxisEvent -= ScaleCanvas;
-        XRDeviceManager.rightThumbAxisEvent -= ScaleCanvas;
+     //   DeviceManager.leftThumbAxisEvent -= ScaleCanvas;
+      //  DeviceManager.rightThumbAxisEvent -= ScaleCanvas;
     }
 
     private void Update()
     {
 
         this.distance = Vector3.Distance(centerPoint.transform.position, this.transform.position);
-        LookAt();
- 
+       // LookAt();
+
+        angle = AngleDifference();
+
     }
 
+    private float AngleDifference()
+    {
+        Vector3 dir = target.transform.position - transform.position;
+        dir = target.transform.InverseTransformDirection(dir);
+        float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+        return angle;
+    }
 
-    float h = 0;
+    
+ 
     private void ScaleCanvas(Vector2 axis)
     {
-
+        float h = 0;
 
         if (anchors[0].canvasGripped || anchors[1].canvasGripped)
         {
-
-            if (axis.x > 0)
+            if (axis.y >= 0.9 || axis.y <= -0.9) return;
+            else
             {
-                h = axis.x * (axis.x * Time.deltaTime);
+                this.transform.SetParent(null);
+                if (axis.x > 0)
+                {
+                    h = axis.x * (axis.x * Time.deltaTime);
+                }
+                else if (axis.x < 0)
+                {
+                    h = axis.x * ((axis.x * -1) * Time.deltaTime);
+                }
+
+                scale += h;
+                scale = Mathf.Clamp(scale, -1, 1);
+                float tmpScale = ScaleValue(-1f, 1f, 0.2f, 1.7f, scale);
+
+                Vector3 newCanvasScale = new Vector3(tmpScale, tmpScale, 0.001f);
+
+
+                Debug.Log(newCanvasScale);
+
+                this.transform.localScale = newCanvasScale;
             }
-            else if (axis.x < 0)
-            {
-                h = axis.x * ((axis.x * -1) * Time.deltaTime);
-            }
-
-            scale += h;
-            scale = Mathf.Clamp(scale, -1, 1);
-            float tmpScale = ScaleValue(-1f, 1f, 0.2f, 1.7f, scale);
-
-            Vector3 newCanvasScale = new Vector3(tmpScale, tmpScale, 0.001f);
-
-
-            Debug.Log(newCanvasScale);
-
-            this.transform.localScale = newCanvasScale;
-
+            
         }
         else
             return;
 
 
-    }
-
-    
+    } 
 
 
 

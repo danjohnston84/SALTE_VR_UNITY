@@ -6,21 +6,27 @@ using UnityEngine.Events;
 public class ControllerManager : MonoBehaviour
 {
 
-    public bool IsGripPressed;
-    public bool IsTriggerPressed;
-    public bool IsMenuPressed;
-    public bool IsClickPressed;
+    [HideInInspector] public bool isGripPressed;
+    [HideInInspector] public bool isTriggerPressed;
+    [HideInInspector] public bool isPrimaryButtonPressed;
+    [HideInInspector] public bool isSecondaryButtonPressed;
+    [HideInInspector] public bool isPrimaryAxisPressed;
 
-    // Button Events
-    public AButtonEvent GripEvent { get; set; }
-    public AButtonEvent TriggerEvent { get; set; }
-    public AButtonEvent MenuEvent { get; set; }
-    public AButtonEvent ClickEvent { get; set; }
+       
+    // Button events Handler
+    public AButtonEvent gripEvent { get; set; }
+    public AButtonEvent triggerEvent { get; set; }
+    public AButtonEvent primaryButtonEvent { get; set; }
+    public AButtonEvent secondaryButtonEvent { get; set; }
+    public AButtonEvent primaryAxisEvent { get; set; }
 
 
-    public UnityEvent IsGripped;
-    public UnityEvent NotGripped;
+    public UnityEvent GripButtonDown;
+    public UnityEvent GripButtonUp;
+    
 
+    [HideInInspector] public int handIndex;
+    string[] hand = new string[] { "Left", "Right" };
     void Start()
     {
         InitializeButtons();
@@ -36,66 +42,84 @@ public class ControllerManager : MonoBehaviour
 
     private void InitializeButtons()
     {
-        (GripEvent = new AButtonEvent()).Initialize(IsGripPressed, OnGripButtonEvent);
-        (TriggerEvent = new AButtonEvent()).Initialize(IsTriggerPressed, OnTriggerButtonEvent);
-        (MenuEvent = new AButtonEvent()).Initialize(IsMenuPressed, OnMenuButtonEvent);
-        (ClickEvent = new AButtonEvent()).Initialize(IsClickPressed, OnClickButtonEvent);
+        (gripEvent = new AButtonEvent()).Initialize(isGripPressed, OnGripButtonEvent);
+        (triggerEvent = new AButtonEvent()).Initialize(isTriggerPressed, OnTriggerButtonEvent);
+        (primaryButtonEvent = new AButtonEvent()).Initialize(isPrimaryButtonPressed, OnPrimaryButtonEvent);
+        (secondaryButtonEvent = new AButtonEvent()).Initialize(isSecondaryButtonPressed, OnSecondaryButtonEvent);
+        (primaryAxisEvent = new AButtonEvent()).Initialize(isPrimaryAxisPressed, OnAxisClickButtonEvent);
     }
 
     // Button Functions
     private void OnGripButtonEvent(bool pressed)
     {
-        IsGripPressed = pressed;
-      
+        isGripPressed = pressed;
+        
 
         if (pressed)
         {
-            Debug.Log("Grip Pressed");
-            IsGripped.Invoke();
+            Debug.Log("Grip Pressed " + hand[handIndex]);
+            GripButtonDown.Invoke();
         }
         else
         {
-            NotGripped.Invoke();
-            Debug.Log("Grip Released");
+            Debug.Log("Grip Released " + hand[handIndex]);
+            GripButtonUp.Invoke();
         }
     }
 
     private void OnTriggerButtonEvent(bool pressed)
     {
-        IsTriggerPressed = pressed;
-     
+        isTriggerPressed = pressed;
+        
 
         if (pressed)
         {
-            Debug.Log("Trigger Pressed");
+            Debug.Log("Trigger Pressed " + hand[handIndex]);
         }
         else
         {
-            Debug.Log("Trigger Released");
+            Debug.Log("Trigger Released " + hand[handIndex]);
         }
     }
 
-    private void OnMenuButtonEvent(bool pressed)
+    private void OnPrimaryButtonEvent(bool pressed)
     {
-        IsMenuPressed = pressed;
+        isPrimaryButtonPressed = pressed;
         if (pressed)
         {
-            Debug.Log("Menu Pressed");
-        }
-    }
-
-    private void OnClickButtonEvent(bool pressed)
-    {
-        IsClickPressed = pressed;
-   
-
-        if (pressed)
-        {
-            Debug.Log("Click Pressed");
+            Debug.Log("Primary Pressed " + hand[handIndex]);
+            
         }
         else
         {
-            Debug.Log("Click Released");
+            Debug.Log("Primary Released " + hand[handIndex]);
         }
     }
+
+    private void OnSecondaryButtonEvent(bool pressed)
+    {
+        isSecondaryButtonPressed = pressed;
+        if (pressed)
+        {
+            Debug.Log("Menu Pressed " + hand[handIndex]);
+        }
+    }
+
+    private void OnAxisClickButtonEvent(bool pressed)
+    {
+        isPrimaryAxisPressed = pressed;
+        
+
+        if (pressed)
+        {
+            Debug.Log("Click Pressed " + hand[handIndex]);
+        }
+        else
+        {
+            Debug.Log("Click Released " + hand[handIndex]);
+        }
+    }
+
+
+
 }
