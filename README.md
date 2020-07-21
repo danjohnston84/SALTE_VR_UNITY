@@ -1,4 +1,4 @@
-SALTE is a listening test software created to aid future research and development of spatial audio systems. The tool consists of a [virtual reality interface](https://github.com/AudioLabYork/SALTE-VR-interface)  and a dedicated [audio rendering engine](https://github.com/AudioLabYork/SALTE-audio-renderer) for conducting spatial audio listening experiments.
+SALTE is a listening test software created to aid future research and development of spatial audio systems. The tool consists of a virtual reality interface and a dedicated [audio rendering engine](https://github.com/AudioLabYork/SALTE-audio-renderer) for conducting spatial audio listening experiments.
 
 Spatial Audio Listening Test Environment (SALTE) can be used in the assessment of:
 
