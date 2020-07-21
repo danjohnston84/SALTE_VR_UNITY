@@ -19,6 +19,7 @@ Spatial Audio Listening Test Environment (SALTE) can be used in the assessment o
 - Download Unity Project
 - Open main environment scene
 - Define OSC IP address and ports in OSC Handler Object (default parameters are in place)
+- Test UI Building on OSC Handler Object without the need for OSC messages
 - Run listening test in Unity Editor or build for standalone.
 - Download [audio render engine](https://github.com/AudioLabYork/SALTE-audio-renderer) and follow instructions for setting up test environment.
 
