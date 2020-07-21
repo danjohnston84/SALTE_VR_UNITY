@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 6531734949667959219}
   - component: {fileID: 7632564177782511017}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: ButtonText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -452,8 +452,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb5c4410c9c4315488216dc856988daf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  IPAddress: 127.0.0.1
-  oscPortOut: 9000
   msg: 
 --- !u!1 &9137650790456778127
 GameObject:
@@ -862,19 +860,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b180b0ccbe16cf844bb667522afa3c33, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _isMushra: 1
-  _sliderIndex: 0
-  _sliderValue: 43
-  _lastSliderValue: 0
-  _valueUI: {fileID: 6770391731511694337}
+  isMushra: 0
+  sliderIndex: 0
+  sliderValue: 0
+  lastSliderValue: 0
+  valueUI: {fileID: 6770391731511694337}
   IPAddress: 127.0.0.1
   oscPortOut: 9000
   buttonmsg: 
-  _buttonLabel: {fileID: 7632564177782511017}
-  _buttonOut: {fileID: 0}
-  _sliderAttribute: {fileID: 61743446976089310}
-  _buttonObject: {fileID: 8778485122980409804}
-  _oscInput: {fileID: 0}
+  buttonLabel: {fileID: 7632564177782511017}
+  buttonOut: {fileID: 7228336156874442376}
+  sliderAttribute: {fileID: 61743446976089310}
+  buttonObject: {fileID: 8778485122980409804}
 --- !u!1 &9137650792376040053
 GameObject:
   m_ObjectHideFlags: 0

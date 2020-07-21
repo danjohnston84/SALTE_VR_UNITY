@@ -85,7 +85,9 @@ public class OSCInput : MonoBehaviour
         }            
 
         // hide UI
-        this.visibleUI = false; 
+        this.visibleUI = false;
+
+        TestEvent();
     }
 
     public void TestEvent()

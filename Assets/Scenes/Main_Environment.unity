@@ -1803,7 +1803,7 @@ PrefabInstance:
     - target: {fileID: 1894894213461048831, guid: 1efd60f19a5ae8c4f92e54391f778fa6,
         type: 3}
       propertyPath: m_RootOrder
-      value: 8
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 1894894213461048831, guid: 1efd60f19a5ae8c4f92e54391f778fa6,
         type: 3}
@@ -2275,7 +2275,7 @@ Transform:
   m_LocalScale: {x: 0.5, y: 1, z: 0.5}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 10
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!136 &756206976
 CapsuleCollider:
@@ -3494,7 +3494,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7976466753377691323}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7951c64acb0fa62458bf30a60089fe2d, type: 3}
   m_Name: 
@@ -4180,7 +4180,7 @@ PrefabInstance:
     - target: {fileID: 1894894213461048831, guid: 1efd60f19a5ae8c4f92e54391f778fa6,
         type: 3}
       propertyPath: m_RootOrder
-      value: 7
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 1894894213461048831, guid: 1efd60f19a5ae8c4f92e54391f778fa6,
         type: 3}
@@ -4383,7 +4383,7 @@ Transform:
   m_Children:
   - {fileID: 3602559006117510241}
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
 --- !u!143 &1174395863
 CharacterController:
@@ -7687,7 +7687,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1746403141
 GameObject:
@@ -8843,11 +8843,23 @@ MonoBehaviour:
   ABbuttonsPresent: 0
   uiStart: 0
   isMushra: 1
-  slidersNum: 0
-  labelsNum: 0
-  labelStrings: []
-  attributeLabels: []
-  screenMessages: []
+  slidersNum: 5
+  labelsNum: 5
+  labelStrings:
+  - Insert
+  - all
+  - your
+  - labels
+  - here
+  attributeLabels:
+  - these
+  - are
+  - the
+  - slider
+  - attributes
+  screenMessages:
+  - 
+  - Listening Test
 --- !u!4 &2111692755
 Transform:
   m_ObjectHideFlags: 0
@@ -8860,7 +8872,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 9
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!43 &2145392163
 Mesh:
@@ -9517,7 +9529,7 @@ Canvas:
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
-  m_AdditionalShaderChannelsFlag: 25
+  m_AdditionalShaderChannelsFlag: 0
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
